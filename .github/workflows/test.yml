@@ -16,8 +16,7 @@ jobs:
         - snapshot
         git_impl:
         - git
-        # FIXME Broken due to glibc version mismatch. See #4456.
-        # - libgit
+        - libgit
     steps:
     - uses: cachix/install-nix-action@v15
       with:
