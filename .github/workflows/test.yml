@@ -29,15 +29,13 @@ jobs:
       with:
         name: emacs-ci
     - uses: actions/checkout@v2
-    - name: Install
+    - name: Configure Git
       run: |
-        # Configure Git
         git config --global user.name "A U Thor"
         git config --global user.email a.u.thor@example.com
         git tag 0
     - name: Test
       run: |
-        # Build and install Emacs (+ magit dependencies) using Nix
         emacs_ci_version=$(echo "emacs-${{ matrix.emacs_version }}" | sed -e "s/\./-/g")
         nix develop ".#${emacs_ci_version}" -c emacs --version
         nix develop ".#${emacs_ci_version}" -c make test-${{ matrix.git_impl }} DASH_DIR=$PWD
