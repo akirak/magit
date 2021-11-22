@@ -19,8 +19,12 @@ jobs:
         # FIXME Broken due to glibc version mismatch. See #4456.
         # - libgit
     steps:
-    - uses: cachix/install-nix-action@v12
+    - uses: cachix/install-nix-action@v15
       with:
+        install_url: https://nixos-nix-install-tests.cachix.org/serve/vij683ly7sl95nnhb67bdjjfabclr85m/install
+        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
+        extra_nix_config: |
+          experimental-features = nix-command flakes
         nix_path: nixpkgs=channel:nixos-unstable
     - uses: cachix/cachix-action@v8
       with:
@@ -30,7 +34,7 @@ jobs:
       run: |
         # Build and install Emacs (+ magit dependencies) using Nix
         emacs_ci_version=$(echo "emacs-${{ matrix.emacs_version }}" | sed -e "s/\./-/g")
-        nix-env -f ./t/default.nix -iA $emacs_ci_version
+        nix profile install ".#${emacs_ci_version}"
         emacs --version
 
         # Configure Git
