@@ -31,15 +31,13 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install
       run: |
-        # Build and install Emacs (+ magit dependencies) using Nix
-        emacs_ci_version=$(echo "emacs-${{ matrix.emacs_version }}" | sed -e "s/\./-/g")
-        nix profile install ".#${emacs_ci_version}"
-        emacs --version
-
         # Configure Git
         git config --global user.name "A U Thor"
         git config --global user.email a.u.thor@example.com
         git tag 0
     - name: Test
       run: |
-        make test-${{ matrix.git_impl }} DASH_DIR=$PWD
+        # Build and install Emacs (+ magit dependencies) using Nix
+        emacs_ci_version=$(echo "emacs-${{ matrix.emacs_version }}" | sed -e "s/\./-/g")
+        nix develop ".#${emacs_ci_version}" -c emacs --version
+        nix develop ".#${emacs_ci_version}" -c make test-${{ matrix.git_impl }} DASH_DIR=$PWD
