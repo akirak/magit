@@ -51,7 +51,12 @@
       rec {
         packages = flake-utils.lib.flattenTree (
           builtins.mapAttrs (name: emacs:
-            (pkgs.emacsPackagesFor emacs).magit
+            let
+              epkgs = (pkgs.emacsPackagesFor emacs);
+            in
+              epkgs.magit.overrideAttrs (pkg: {
+                buildInputs = pkg.buildInputs ++ [epkgs.libgit];
+              })
           ) emacs-ci.packages.${system}
         );
         checks = {
